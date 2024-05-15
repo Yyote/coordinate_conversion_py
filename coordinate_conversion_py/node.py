@@ -8,7 +8,7 @@ from privyaznik_msgs.srv import UtmToWgs, WgsToUtm
 class CoordinateTransferService(Node):
 
     def __init__(self):
-        super().__init__('minimal_service')
+        super().__init__('coordinate_transfer_service')
         self.utm_to_wgs_srv = self.create_service(UtmToWgs, 'utm_to_wgs', self.utm_to_wgs_cb)
         self.wgs_to_utm_srv = self.create_service(WgsToUtm, 'wgs_to_utm', self.wgs_to_utm_cb)
 
@@ -20,15 +20,17 @@ class CoordinateTransferService(Node):
     def wgs_to_utm_cb(self, request: WgsToUtm.Request, response: WgsToUtm.Response):
         # response.latitude, response.longitude = utm.to_latlon(request.easting, request.northing, request.zone_number, request.zone_letter, request.northern, True)
         response.easting, response.northing, response.zone_number, response.zone_letter = utm.from_latlon(request.latitude, request.longitude)
+        print("AAA")
+        print(response)
         return response
 
 
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_service = CoordinateTransferService()
+    node = CoordinateTransferService()
 
-    rclpy.spin(minimal_service)
+    rclpy.spin(node)
 
     rclpy.shutdown()
 
